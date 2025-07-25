@@ -22,7 +22,19 @@ REFERENCES pacientes(id_paciente)
 );
 
 -- AGREGA LA COLUMNA imc_dx_oms CODIFICADA NUMERICAMENTE SEGUN CLASIFICACION OMS 2000
-
+ALTER TABLE estado_nutricional 
+ADD COLUMN dx_en_oms INTEGER 
+GENERATED ALWAYS AS (
+    CASE 
+        WHEN imc < 18.5 THEN 1               -- Bajo peso
+        WHEN imc BETWEEN 18.5 AND 24.9 THEN 2 -- Normal
+        WHEN imc BETWEEN 25.0 AND 29.9 THEN 3 -- Sobrepeso
+        WHEN imc BETWEEN 30.0 AND 34.9 THEN 4 -- Obesidad Grado I
+        WHEN imc BETWEEN 35.0 AND 39.9 THEN 5 -- Obesidad Grado II
+        WHEN imc >= 40.0 THEN 6               -- Obesidad Grado III
+        ELSE NULL                             -- Para valores nulos/no válidos
+    END
+) STORED;
 
 -- VISTAS PARA AGREGAR A LA TABLA PACEINTES 
 CREATE OR REPLACE VIEW pacientes_vista AS
